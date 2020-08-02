@@ -1,24 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useReducer, useEffect } from "react";
+import "./App.css";
+import FunctionForm from "./FunctionForm";
+import data from "./data";
+import StudentsContainer from "./StudentsContainer";
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "addData":
+      return { ...state, students: action.data };
+
+    case "inputField":
+      return { ...state, [action.fieldname]: action.value };
+
+    case "addOneStudent":
+      let newId = state.students.length + 1;
+      let newStudent = {
+        grade: action.info.grade,
+        name: action.info.name,
+        id: newId,
+      };
+      return { ...state, students: [...state.students, newStudent] };
+
+    default:
+      return state;
+  }
+}
 
 function App() {
+  const initialState = { students: [], name: "", grade: "" };
+  const [{ students, name, grade }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+
+  useEffect(() => {
+    dispatch({ type: "addData", data });
+  }, []);
+
+  const addStudents = (info) => {
+    dispatch({ type: "addOneStudent", info });
+  };
+
+  const handleChange = (name, value) => {
+    dispatch({ type: "inputField", fieldname: name, value: value });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <StudentsContainer students={students} />
+      <FunctionForm
+        addStudents={addStudents}
+        handleChange={handleChange}
+        name={name}
+        grade={grade}
+      />
     </div>
   );
 }
