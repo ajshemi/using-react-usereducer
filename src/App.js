@@ -4,6 +4,8 @@ import FunctionForm from "./FunctionForm";
 import data from "./data";
 import StudentsContainer from "./StudentsContainer";
 
+const initialState = { students: [], name: "", grade: "" };
+
 function reducer(state, action) {
   switch (action.type) {
     case "addData":
@@ -27,7 +29,6 @@ function reducer(state, action) {
 }
 
 function App() {
-  const initialState = { students: [], name: "", grade: "" };
   const [{ students, name, grade }, dispatch] = useReducer(
     reducer,
     initialState
